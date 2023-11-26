@@ -42,7 +42,7 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
     }
   }
 
-  async verifyAccessCommentThread(commentId, userId) {
+  async verifyCommentThreadOwner(commentId, userId) {
     const query = {
       text: 'SELECT * FROM comments WHERE id = $1 AND user_id = $2',
       values: [commentId, userId],
@@ -53,6 +53,16 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
     if (result.rowCount !== 1) {
       throw new AuthorizationError('akses tidak diberikan');
     }
+  }
+
+  async deleteCommentThread(commentId) {
+    const isDelete = true;
+    const deletedAt = new Date().toISOString();
+    const query = {
+      text: 'UPDATE comments SET is_delete = $2, deleted_at = $3 WHERE id = $1',
+      values: [commentId, isDelete, deletedAt],
+    };
+    await this._pool.query(query);
   }
 }
 

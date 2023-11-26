@@ -1,5 +1,5 @@
 const AddCommentThreadUseCase = require('../../../../Applications/use_case/AddCommentThreadUseCase');
-const DomainErrorTranslator = require('../../../../Commons/exceptions/DomainErrorTranslator');
+const DeleteCommentThreadUseCase = require('../../../../Applications/use_case/DeleteCommentThreadUseCase');
 
 class CommentsHandler {
   constructor(container) {
@@ -9,37 +9,45 @@ class CommentsHandler {
   }
 
   async postCommentThreadHandler(request, h) {
-    try {
-      const addCommentThreadUseCase = this._container.getInstance(AddCommentThreadUseCase.name);
+    const addCommentThreadUseCase = this._container.getInstance(AddCommentThreadUseCase.name);
 
-      // const { id: credentialId } = request.auth.credentials;
+    // auth
+    const { id: credentialId } = request.auth.credentials;
+    const { threadId } = request.params;
 
-      const { threadId } = request.params;
+    const addedComment = await addCommentThreadUseCase.execute({
+      ...request.payload,
+      userId: credentialId,
+      threadId,
+    });
 
-      const addedComment = await addCommentThreadUseCase.execute({
-        ...request.payload,
-        // userId: credentialId,
-        threadId,
-      });
+    const response = h.response({
+      status: 'success',
+      data: {
+        addedComment,
+      },
+    });
+    response.code(201);
+    return response;
+  }
 
-      const response = h.response({
-        status: 'success',
-        data: {
-          addedComment,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      const translatedError = DomainErrorTranslator.translate(error);
+  async deleteCommentThreadHandler(request, h) {
+    const deleteCommentThreadUseCase = this._container.getInstance(DeleteCommentThreadUseCase.name);
 
-      const response = h.response({
-        status: 'fail',
-        message: translatedError.message,
-      });
-      response.code(translatedError.statusCode);
-      return response;
-    }
+    // auth
+    const { id: credentialId } = request.auth.credentials;
+    const { threadId } = request.params;
+    const { commentId } = request.params;
+    const useCasePayload = {
+      threadId,
+      commentId,
+      credentialId,
+    };
+    await deleteCommentThreadUseCase.execute(useCasePayload);
+
+    return h.response({
+      status: 'success',
+    });
   }
 }
 

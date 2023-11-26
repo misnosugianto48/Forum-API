@@ -10,6 +10,10 @@ class CommentThreadRepository {
   async verifyCommentThreadOwner(commentId, userId) {
     throw new Error('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
+
+  async deleteCommentThread(commentId) {
+    throw new Error('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
 }
 
 module.exports = CommentThreadRepository;

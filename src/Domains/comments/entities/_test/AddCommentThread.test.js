@@ -4,7 +4,7 @@ describe('a AddCommentThread entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     // Arrange
     const payload = {
-
+      content: 'some comment thread',
     };
 
     // Action adn Assert
@@ -14,7 +14,9 @@ describe('a AddCommentThread entities', () => {
   it('should throw error when payload did not meet data type specification', () => {
     // Arrange
     const payload = {
-      content: 123,
+      content: 'some comment thread',
+      userId: 'user-user123',
+      threadId: 1234,
     };
 
     // Action and Assert
@@ -25,12 +27,16 @@ describe('a AddCommentThread entities', () => {
     // Arrange
     const payload = {
       content: 'some content thread',
+      userId: 'user-user123',
+      threadId: 'thread-thread123',
     };
 
     // Action
-    const { content } = new AddCommentThread(payload);
+    const { content, userId, threadId } = new AddCommentThread(payload);
 
     // assert
     expect(content).toEqual(payload.content);
+    expect(userId).toEqual(payload.userId);
+    expect(threadId).toEqual(payload.threadId);
   });
 });

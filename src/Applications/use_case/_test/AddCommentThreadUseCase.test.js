@@ -41,8 +41,8 @@ describe('AddCommentThreadUseCase', () => {
 
     /** creating use case instance */
     const getCommentThreadUseCase = new AddCommentThreadUseCase({
-      threadRepository: mockThreadRepository,
       commentThreadRepository: mockCommentThreadRepository,
+      threadRepository: mockThreadRepository,
     });
 
     // Action
@@ -57,10 +57,6 @@ describe('AddCommentThreadUseCase', () => {
 
     expect(mockThreadRepository.verifyAvailableThread).toBeCalledWith(useCasePayload.threadId);
 
-    expect(mockCommentThreadRepository.addCommentThread).toBeCalledWith(new AddCommentThread({
-      content: useCasePayload.content,
-      userId: useCasePayload.userId,
-      threadId: useCasePayload.threadId,
-    }));
+    expect(mockCommentThreadRepository.addCommentThread).toBeCalledWith(new AddCommentThread(useCasePayload));
   });
 });

@@ -40,7 +40,7 @@ const CommentThreadTableTestHelper = {
 
   async findCommentThreadsByIdFalseDelete(id) {
     const query = {
-      text: 'SELECT* FROM comments WHERE id = $1 AND is_delete = false',
+      text: 'SELECT * FROM comments WHERE id = $1 AND is_delete = false',
       values: [id],
     };
 

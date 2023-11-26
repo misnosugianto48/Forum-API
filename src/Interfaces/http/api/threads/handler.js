@@ -1,5 +1,4 @@
 const AddThreadUseCase = require('../../../../Applications/use_case/AddThreadUseCase');
-const DomainErrorTranslator = require('../../../../Commons/exceptions/DomainErrorTranslator');
 
 class ThreadsHandler {
   constructor(container) {
@@ -9,34 +8,25 @@ class ThreadsHandler {
   }
 
   async postThreadHandler(request, h) {
-    try {
-      const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
+    const addThreadUseCase = this._container.getInstance(AddThreadUseCase.name);
 
-      // auth
-      const { id: credentialId } = request.auth.credentials;
-      const addedThread = await addThreadUseCase.execute({
-        ...request.payload,
-        userId: credentialId,
-      });
+    // auth
+    const { id: credentialId } = request.auth.credentials;
+    const addedThread = await addThreadUseCase.execute({
+      ...request.payload,
+      userId: credentialId,
+    });
 
-      const response = h.response({
-        status: 'success',
-        data: {
-          addedThread,
-        },
-      });
-      response.code(201);
-      return response;
-    } catch (error) {
-      const translatedError = DomainErrorTranslator.translate(error);
+    // console.log(addedThread);
 
-      const response = h.response({
-        status: 'fail',
-        message: translatedError.message,
-      });
-      response.code(translatedError.statusCode);
-      return response;
-    }
+    const response = h.response({
+      status: 'success',
+      data: {
+        addedThread,
+      },
+    });
+    response.code(201);
+    return response;
   }
 }
 
