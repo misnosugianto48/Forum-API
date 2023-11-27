@@ -7,11 +7,11 @@ const routes = (handler) => ([
       auth: 'forum_auth',
     },
   },
-  // {
-  //   method: 'GET',
-  //   path: '/threads/{id}',
-  //   handler: handler.getThreadHandler,
-  // },
+  {
+    method: 'GET',
+    path: '/threads/{id}',
+    handler: handler.getThreadHandler,
+  },
 ]);
 
 module.exports = routes;

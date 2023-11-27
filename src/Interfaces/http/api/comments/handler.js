@@ -6,6 +6,7 @@ class CommentsHandler {
     this._container = container;
 
     this.postCommentThreadHandler = this.postCommentThreadHandler.bind(this);
+    this.deleteCommentThreadHandler = this.deleteCommentThreadHandler.bind(this);
   }
 
   async postCommentThreadHandler(request, h) {
@@ -31,13 +32,14 @@ class CommentsHandler {
     return response;
   }
 
-  async deleteCommentThreadHandler(request, h) {
+  async deleteCommentThreadHandler(request) {
     const deleteCommentThreadUseCase = this._container.getInstance(DeleteCommentThreadUseCase.name);
 
     // auth
     const { id: credentialId } = request.auth.credentials;
     const { threadId } = request.params;
     const { commentId } = request.params;
+    console.log('user: ', credentialId, 'thread: ', threadId, 'comment: ', commentId);
     const useCasePayload = {
       threadId,
       commentId,
@@ -45,9 +47,11 @@ class CommentsHandler {
     };
     await deleteCommentThreadUseCase.execute(useCasePayload);
 
-    return h.response({
+    const response = h.response({
       status: 'success',
     });
+
+    response.code(200);
   }
 }
 

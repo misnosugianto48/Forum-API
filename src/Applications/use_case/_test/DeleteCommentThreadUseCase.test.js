@@ -6,7 +6,8 @@ const DeleteCommentThreadUseCase = require('../DeleteCommentThreadUseCase');
 describe('DeleteCommentThreadUseCase', () => {
   it('should throw error if payload not contain threadId, commentId, and userId', async () => {
     // arrange
-    const useCasePayload = {};
+    const useCasePayload = {
+    };
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({});
 
     // action and assert
@@ -16,14 +17,14 @@ describe('DeleteCommentThreadUseCase', () => {
   it('should throw error if payload not string', async () => {
     // arrange
     const useCasePayload = {
-      commentId: 'comment-comment123',
-      userId: 123,
+      commentId: 123,
+      userId: 'user-user123',
       threadId: 'thread-thread123',
     };
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({});
 
     // action and assert
-    await expect(deleteCommentThreadUseCase.execute(useCasePayload)).rejects.toThrow('DELETE_COMMENT_THREAD_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
+    await expect(deleteCommentThreadUseCase.execute(useCasePayload)).rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should orchestracting delete comment thread correctly', async () => {
@@ -39,13 +40,13 @@ describe('DeleteCommentThreadUseCase', () => {
     const mockCommentThreadRepository = new CommentThreadRepository();
 
     /** mocking needed function */
-    mockThreadRepository.verifyAvailableThread = jest.fn().mockImplementation(() => Promise.resolve());
+    mockThreadRepository.verifyAvailableThread = jest.fn(() => Promise.resolve());
 
-    mockCommentThreadRepository.verifyAvailableCommentThread = jest.fn().mockImplementation(() => Promise.resolve());
+    mockCommentThreadRepository.verifyAvailableCommentThread = jest.fn(() => Promise.resolve());
 
-    mockCommentThreadRepository.verifyCommentThreadOwner = jest.fn().mockImplementation(() => Promise.resolve());
+    mockCommentThreadRepository.verifyCommentThreadOwner = jest.fn(() => Promise.resolve());
 
-    mockCommentThreadRepository.deleteCommentThread = jest.fn().mockImplementation(() => Promise.resolve());
+    mockCommentThreadRepository.deleteCommentThread = jest.fn(() => Promise.resolve());
 
     /** creating use case instance */
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({
@@ -63,5 +64,7 @@ describe('DeleteCommentThreadUseCase', () => {
     expect(mockCommentThreadRepository.verifyCommentThreadOwner).toHaveBeenCalledWith(useCasePayload.commentId, useCasePayload.userId);
 
     expect(mockCommentThreadRepository.deleteCommentThread).toHaveBeenCalledWith(useCasePayload.commentId);
+
+    expect(mockCommentThreadRepository.deleteCommentThread).toBeDefined();
   });
 });

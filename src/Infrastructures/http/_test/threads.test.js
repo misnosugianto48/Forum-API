@@ -186,4 +186,49 @@ describe('/threads endpoint', () => {
       expect(responseJson.message).toEqual('Missing authentication');
     });
   });
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and return thread detail', async () => {
+      const server = await createServer(container);
+
+      const authToken = await getAccessToken();
+
+      const threadResponse = await server.inject({
+        method: 'POST',
+        url: '/threads',
+        payload: {
+          title: 'some title thread',
+          body: 'some body thread',
+        },
+        headers: {
+          authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      const threadResponseJson = JSON.parse(threadResponse.payload);
+
+      const { addedThread } = threadResponseJson.data;
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${addedThread.id}`,
+      });
+
+      const responseJson = JSON.parse(response.payload);
+      console.log('get :', response);
+
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread.id).toEqual('thread-thread123');
+      expect(responseJson.data.thread.title).toBeDefined();
+      expect(responseJson.data.thread.body).toBeDefined();
+      expect(responseJson.data.thread.date).toBeDefined();
+      expect(responseJson.data.thread.username).toBeDefined();
+      expect(responseJson.data.thread.comments).toBeDefined();
+      expect(responseJson.data.thread.comments[0].id).toEqual('comment-comment123');
+      expect(responseJson.data.thread.comments[0].username).toBeDefined();
+      expect(responseJson.data.thread.comments[0].date).toBeDefined();
+    });
+  });
 });
