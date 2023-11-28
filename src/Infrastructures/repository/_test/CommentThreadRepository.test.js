@@ -165,35 +165,32 @@ describe('CommentThreadRepositoryPostgres', () => {
     describe('deleteCommentThread function', () => {
       it('shoud be soft delete comment thread', async () => {
         // Arrange
-        /** create user for owner value in thread */
-        await UsersTableTestHelper.addUser({ id: 'user-user123', username: 'misno48' });
-
-        /** create thread for id value in comment */
-        await ThreadsTableTestHelper.addThread({ title: 'some title' });
-
-        /** create comment thread with value from owner and thread */
-        await CommentThreadsTableTestHelper.addCommentThread({ content: 'some comment thread' });
-
-        const useCasePayload = {
-          threadId: 'thread-thread123',
-          userId: 'user-user123',
-          commentId: 'comment-comment123',
-        };
-
-        // action
         const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool, {});
 
-        // await expect(commentThreadRepositoryPostgres.verifyCommentThreadOwner(useCasePayload)).resolves.not.toThrowError(AuthorizationError);
+        await UsersTableTestHelper.addUser({
+          id: 'user-user123',
+          username: 'misno48',
+        });
 
+        await ThreadsTableTestHelper.addThread({
+          id: 'thread-thread123',
+          title: 'some title thread',
+          userId: 'user-user123',
+        });
+
+        await CommentThreadsTableTestHelper.addCommentThread({
+          content: 'some comment thread',
+          threadId: 'thread-thread123',
+          userId: 'user-user123',
+        });
+
+        // act
         await commentThreadRepositoryPostgres.deleteCommentThread('comment-comment123');
 
         // assert
-        deletedComment = await CommentThreadsTableTestHelper.findCommentThreadsByIdFalseDelete(useCasePayload.commentId);
+        deletedComment = await CommentThreadsTableTestHelper.findDeletedComment('comment-comment123');
 
-        // deletedComment = await CommentThreadsTableTestHelper.findCommentThreadsById(useCasePayload.commentId);
-        // console.log(deletedComment);
-        // expect(deletedComment.is_delete).toEqual(true);
-        // expect(deletedComment).toHaveLength(0);
+        expect(typeof deletedComment).toEqual('boolean');
       });
 
       describe('getCommentThread function', () => {

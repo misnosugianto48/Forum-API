@@ -38,14 +38,15 @@ const CommentThreadTableTestHelper = {
     return pool.query(query);
   },
 
-  async findCommentThreadsByIdFalseDelete(id) {
+  async findDeletedComment(id) {
     const query = {
-      text: 'SELECT * FROM comments WHERE id = $1 AND is_delete = false',
+      text: 'SELECT is_delete FROM comments WHERE id = $1',
       values: [id],
     };
 
     const result = await pool.query(query);
-    return result.rows;
+    const isDelete = result.rows[0].is_delete;
+    return isDelete;
   },
 
   async cleanTable() {

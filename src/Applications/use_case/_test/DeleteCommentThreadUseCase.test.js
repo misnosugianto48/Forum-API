@@ -1,74 +1,61 @@
 /* eslint-disable max-len */
+const DeleteCommentThreadUseCase = require('../DeleteCommentThreadUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentThreadRepository = require('../../../Domains/comments/CommentThreadRepository');
-const DeleteCommentThreadUseCase = require('../DeleteCommentThreadUseCase');
 
-describe('DeleteCommentThreadUseCase', () => {
-  it('should throw error if payload not contain needed property', async () => {
-    // arr
-    const useCasePayload = {
-      threadId: 'thread-thread123',
-      commentId: 'comment-thread123',
-    };
-
+describe('deleteCommentThread fucntion', () => {
+  it('should throw error when payload not contain needed thread and comment id', async () => {
+    const useCasePaylaod = {};
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({});
 
-    // act and assert
-    await expect(deleteCommentThreadUseCase.execute(useCasePayload))
-      .rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY');
+    await expect(deleteCommentThreadUseCase.execute(useCasePaylaod)).rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PAYLOAD');
   });
 
-  it('should throw error if payload not string', async () => {
-    // arrange
-    const useCasePayload = {
+  it('should throw error when payload not string', async () => {
+    const useCasePaylaod = {
+      threadId: 'thread-thread123',
       commentId: 123,
       userId: 'user-user123',
-      threadId: 'thread-thread123',
     };
+
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({});
 
-    // action and assert
-    await expect(deleteCommentThreadUseCase.execute(useCasePayload)).rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    await expect(deleteCommentThreadUseCase.execute(useCasePaylaod)).rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should orchestracting delete comment thread correctly', async () => {
-    // arrange
-    const useCasePayload = {
-      commentId: 'comment-comment123',
-      userId: 'user-user123',
+  it('should orchestracting delete correctly', async () => {
+    const useCasePaylaod = {
       threadId: 'thread-thread123',
+      userId: 'user-user123',
+      commentId: 'comment-comment132',
     };
 
-    /** createing dependancy of use case */
     const mockThreadRepository = new ThreadRepository();
-    const mockCommentThreadRepository = new CommentThreadRepository();
+    const mockCommentThreadRespository = new CommentThreadRepository();
 
-    /** mocking needed function */
     mockThreadRepository.verifyAvailableThread = jest.fn(() => Promise.resolve());
 
-    // mockCommentThreadRepository.verifyAvailableCommentThread = jest.fn(() => Promise.resolve());
+    mockCommentThreadRespository.verifyAvailableCommentThread = jest.fn(() => Promise.resolve());
 
-    mockCommentThreadRepository.verifyCommentThreadOwner = jest.fn(() => Promise.resolve());
+    mockCommentThreadRespository.verifyCommentThreadOwner = jest.fn(() => Promise.resolve());
 
-    mockCommentThreadRepository.deleteCommentThread = jest.fn(() => Promise.resolve());
+    mockCommentThreadRespository.deleteCommentThread = jest.fn(() => Promise.resolve());
 
-    /** creating use case instance */
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({
-      commentThreadRepository: mockCommentThreadRepository,
       threadRepository: mockThreadRepository,
+      commentThreadRepository: mockCommentThreadRespository,
     });
 
-    // action
-    await deleteCommentThreadUseCase.execute(useCasePayload);
+    await deleteCommentThreadUseCase.execute(useCasePaylaod);
 
-    expect(mockThreadRepository.verifyAvailableThread).toHaveBeenCalledWith(useCasePayload.threadId);
+    expect(mockThreadRepository.verifyAvailableThread).toHaveBeenCalledWith(useCasePaylaod.threadId);
 
-    // expect(mockCommentThreadRepository.verifyAvailableCommentThread).toHaveBeenCalledWith(useCasePayload.commentId);
+    expect(mockCommentThreadRespository.verifyAvailableCommentThread).toHaveBeenCalledWith(useCasePaylaod.commentId);
 
-    expect(mockCommentThreadRepository.verifyCommentThreadOwner).toHaveBeenCalledWith(useCasePayload);
+    expect(mockCommentThreadRespository.verifyCommentThreadOwner).toHaveBeenCalledWith(useCasePaylaod.commentId, useCasePaylaod.userId);
 
-    expect(mockCommentThreadRepository.deleteCommentThread).toHaveBeenCalledWith(useCasePayload.commentId);
+    expect(mockCommentThreadRespository.deleteCommentThread).toHaveBeenCalledWith(useCasePaylaod.commentId);
 
-    expect(mockCommentThreadRepository.deleteCommentThread).toBeDefined();
+    expect(deleteCommentThreadUseCase.execute).toBeDefined();
   });
 });
