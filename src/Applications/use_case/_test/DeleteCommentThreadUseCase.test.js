@@ -4,14 +4,18 @@ const CommentThreadRepository = require('../../../Domains/comments/CommentThread
 const DeleteCommentThreadUseCase = require('../DeleteCommentThreadUseCase');
 
 describe('DeleteCommentThreadUseCase', () => {
-  it('should throw error if payload not contain threadId, commentId, and userId', async () => {
-    // arrange
+  it('should throw error if payload not contain needed property', async () => {
+    // arr
     const useCasePayload = {
+      threadId: 'thread-thread123',
+      commentId: 'comment-thread123',
     };
+
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({});
 
-    // action and assert
-    await expect(deleteCommentThreadUseCase.execute(useCasePayload)).rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PAYLOAD');
+    // act and assert
+    await expect(deleteCommentThreadUseCase.execute(useCasePayload))
+      .rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY');
   });
 
   it('should throw error if payload not string', async () => {
@@ -24,7 +28,7 @@ describe('DeleteCommentThreadUseCase', () => {
     const deleteCommentThreadUseCase = new DeleteCommentThreadUseCase({});
 
     // action and assert
-    await expect(deleteCommentThreadUseCase.execute(useCasePayload)).rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
+    await expect(deleteCommentThreadUseCase.execute(useCasePayload)).rejects.toThrowError('DELETE_COMMENT_THREAD_USE_CASE.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
   it('should orchestracting delete comment thread correctly', async () => {
@@ -42,7 +46,7 @@ describe('DeleteCommentThreadUseCase', () => {
     /** mocking needed function */
     mockThreadRepository.verifyAvailableThread = jest.fn(() => Promise.resolve());
 
-    mockCommentThreadRepository.verifyAvailableCommentThread = jest.fn(() => Promise.resolve());
+    // mockCommentThreadRepository.verifyAvailableCommentThread = jest.fn(() => Promise.resolve());
 
     mockCommentThreadRepository.verifyCommentThreadOwner = jest.fn(() => Promise.resolve());
 
@@ -59,9 +63,9 @@ describe('DeleteCommentThreadUseCase', () => {
 
     expect(mockThreadRepository.verifyAvailableThread).toHaveBeenCalledWith(useCasePayload.threadId);
 
-    expect(mockCommentThreadRepository.verifyAvailableCommentThread).toHaveBeenCalledWith(useCasePayload.commentId);
+    // expect(mockCommentThreadRepository.verifyAvailableCommentThread).toHaveBeenCalledWith(useCasePayload.commentId);
 
-    expect(mockCommentThreadRepository.verifyCommentThreadOwner).toHaveBeenCalledWith(useCasePayload.commentId, useCasePayload.userId);
+    expect(mockCommentThreadRepository.verifyCommentThreadOwner).toHaveBeenCalledWith(useCasePayload);
 
     expect(mockCommentThreadRepository.deleteCommentThread).toHaveBeenCalledWith(useCasePayload.commentId);
 

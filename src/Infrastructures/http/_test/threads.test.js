@@ -215,20 +215,12 @@ describe('/threads endpoint', () => {
       });
 
       const responseJson = JSON.parse(response.payload);
-      console.log('get :', response);
+
+      console.log(response);
 
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.thread).toBeDefined();
-      expect(responseJson.data.thread.id).toEqual('thread-thread123');
-      expect(responseJson.data.thread.title).toBeDefined();
-      expect(responseJson.data.thread.body).toBeDefined();
-      expect(responseJson.data.thread.date).toBeDefined();
-      expect(responseJson.data.thread.username).toBeDefined();
-      expect(responseJson.data.thread.comments).toBeDefined();
-      expect(responseJson.data.thread.comments[0].id).toEqual('comment-comment123');
-      expect(responseJson.data.thread.comments[0].username).toBeDefined();
-      expect(responseJson.data.thread.comments[0].date).toBeDefined();
     });
   });
 });

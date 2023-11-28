@@ -31,17 +31,23 @@ class ThreadsHandler {
     return response;
   }
 
-  async getThreadHandler(request, h) {
+  async getThreadHandler(request) {
     const getThreadUseCase = this._container.getInstance(GetThreadUseCase.name);
-    const useCasePayload = request.params.id;
-    const { thread } = await getThreadUseCase.getThread(useCasePayload);
-    console.log(thread);
-    return h.response({
+
+    const { threadId } = request.params;
+
+    console.log(threadId);
+
+    const getThread = await getThreadUseCase.execute(threadId);
+
+    // console.log(thread);
+
+    return {
       status: 'success',
       data: {
-        thread,
+        getThread,
       },
-    });
+    };
   }
 }
 

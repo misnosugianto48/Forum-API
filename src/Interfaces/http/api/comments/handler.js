@@ -33,25 +33,20 @@ class CommentsHandler {
   }
 
   async deleteCommentThreadHandler(request) {
-    const deleteCommentThreadUseCase = this._container.getInstance(DeleteCommentThreadUseCase.name);
-
-    // auth
-    const { id: credentialId } = request.auth.credentials;
-    const { threadId } = request.params;
-    const { commentId } = request.params;
-    console.log('user: ', credentialId, 'thread: ', threadId, 'comment: ', commentId);
-    const useCasePayload = {
-      threadId,
-      commentId,
-      credentialId,
+    const deleteCommentUseCase = this._container.getInstance(DeleteCommentThreadUseCase.name);
+    const payload = {
+      threadId: request.params.threadId,
+      commentId: request.params.commentId,
+      userId: request.auth.credentials.id,
     };
-    await deleteCommentThreadUseCase.execute(useCasePayload);
 
-    const response = h.response({
+    console.log(payload);
+
+    await deleteCommentUseCase.execute(payload);
+
+    return {
       status: 'success',
-    });
-
-    response.code(200);
+    };
   }
 }
 

@@ -6,19 +6,18 @@ class GetThreadUseCase {
     this._commentThreadRespository = commentThreadRepository;
   }
 
-  async execute(useCasePayload) {
-    const threadId = useCasePayload;
-
+  async execute(threadId) {
     if (!threadId) {
-      throw new Error('GET_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PAYLOAD');
+      throw new Error('GET_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY');
     } else if (typeof threadId !== 'string') {
-      throw new Error('GET_THREAD_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('GET_THREAD_USE_CASE.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
 
-    const threads = await this._threadRepository.getThread(threadId);
-    const commentThreads = await this._commentThreadRespository.getCommentThread(threadId);
+    const thread = await this._threadRepository.getThread(threadId);
 
-    const comment = commentThreads.map((data) => new GetCommentThread({
+    const commentThread = await this._commentThreadRespository.getCommentThread(threadId);
+
+    const comment = commentThread.map((data) => new GetCommentThread({
       id: data.id,
       username: data.username,
       date: data.date,
@@ -27,7 +26,7 @@ class GetThreadUseCase {
     }));
 
     return {
-      ...threads,
+      ...thread,
       comments: comment,
     };
   }

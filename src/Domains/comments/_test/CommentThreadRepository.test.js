@@ -8,11 +8,11 @@ describe('CommentThreadRepository interface', () => {
     // Action and assert
     await expect(commentThreadRepository.addCommentThread({})).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 
-    await expect(commentThreadRepository.verifyAvailableCommentThread({})).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(commentThreadRepository.verifyAvailableCommentThread('')).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 
-    await expect(commentThreadRepository.verifyCommentThreadOwner({})).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(commentThreadRepository.verifyCommentThreadOwner('')).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 
-    await expect(commentThreadRepository.deleteCommentThread({})).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(commentThreadRepository.deleteCommentThread('')).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 
     await expect(commentThreadRepository.getCommentThread({})).rejects.toThrowError('COMMENT_THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });

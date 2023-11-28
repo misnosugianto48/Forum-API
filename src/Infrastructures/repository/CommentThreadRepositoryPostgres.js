@@ -38,7 +38,7 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
     const result = await this._pool.query(query);
 
     if (result.rowCount !== 1) {
-      throw new NotFoundError('comment tidak ditemukan');
+      throw new NotFoundError('komentar tidak ditemukan');
     }
   }
 
@@ -62,6 +62,7 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
       text: 'UPDATE comments SET is_delete = $2, deleted_at = $3 WHERE id = $1',
       values: [commentId, isDelete, deletedAt],
     };
+
     await this._pool.query(query);
   }
 
@@ -77,9 +78,15 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
       values: [threadId],
     };
 
-    const { rows } = await this._pool.query(query);
+    const result = await this._pool.query(query);
 
-    return rows;
+    if (!result.rowCount) {
+      throw new NotFoundError('Komentar tidak ada');
+    }
+
+    return result.rows.map((comment) => ({
+      ...comment,
+    }));
   }
 }
 

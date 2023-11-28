@@ -6,22 +6,29 @@ class DeleteCommentThreadUseCase {
   }
 
   async execute(useCasePayload) {
-    const { commentId, threadId, userId } = useCasePayload;
+    this._validatePayload(useCasePayload);
+
+    await this._threadRepository.verifyAvailableThread(useCasePayload.threadId);
+
+    // await this._commentThreadRepository.verifyAvailableCommentThread(commentId);
+
+    await this._commentThreadRepository.verifyCommentThreadOwner(useCasePayload);
+
+    await this._commentThreadRepository.deleteCommentThread(useCasePayload.commentId);
+  }
+
+  _validatePayload(payload) {
+    const { commentId, threadId, userId } = payload;
 
     if (!commentId || !userId || !threadId) {
-      throw new Error('DELETE_COMMENT_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PAYLOAD');
-    } else if (
+      throw new Error('DELETE_COMMENT_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY');
+    }
+
+    if (
       typeof commentId !== 'string' || typeof userId !== 'string' || typeof threadId !== 'string'
     ) {
-      throw new Error('DELETE_COMMENT_THREAD_USE_CASE.PAYLOAD_NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('DELETE_COMMENT_THREAD_USE_CASE.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
-    await this._threadRepository.verifyAvailableThread(threadId);
-
-    await this._commentThreadRepository.verifyAvailableCommentThread(commentId);
-
-    await this._commentThreadRepository.verifyCommentThreadOwner(commentId, userId);
-
-    await this._commentThreadRepository.deleteCommentThread(commentId);
   }
 }
 

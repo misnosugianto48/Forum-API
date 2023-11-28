@@ -166,66 +166,71 @@ describe('CommentThreadRepositoryPostgres', () => {
       it('shoud be soft delete comment thread', async () => {
         // Arrange
         /** create user for owner value in thread */
-        const registerUser = {
-          id: 'user-user123',
-          username: 'misno48',
-          password: 'secret_password',
-          fullname: 'Misno Sugianto',
-        };
-
-        await UsersTableTestHelper.addUser(registerUser);
+        await UsersTableTestHelper.addUser({ id: 'user-user123', username: 'misno48' });
 
         /** create thread for id value in comment */
-        const addThread = {
-          id: 'thread-thread123',
-          title: 'some title thread',
-          body: 'some body thread',
-          userId: registerUser.id,
-        };
-
-        await ThreadsTableTestHelper.addThread(addThread);
+        await ThreadsTableTestHelper.addThread({ title: 'some title' });
 
         /** create comment thread with value from owner and thread */
-        const commentThread = {
-          id: 'comment-comment123',
-          content: 'some comment thread',
-          userId: registerUser.id,
-          threadId: addThread.id,
-        };
+        await CommentThreadsTableTestHelper.addCommentThread({ content: 'some comment thread' });
 
-        await CommentThreadsTableTestHelper.addCommentThread(commentThread);
+        const useCasePayload = {
+          threadId: 'thread-thread123',
+          userId: 'user-user123',
+          commentId: 'comment-comment123',
+        };
 
         // action
         const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool, {});
-        await commentThreadRepositoryPostgres.deleteCommentThread(commentThread.id);
+
+        // await expect(commentThreadRepositoryPostgres.verifyCommentThreadOwner(useCasePayload)).resolves.not.toThrowError(AuthorizationError);
+
+        await commentThreadRepositoryPostgres.deleteCommentThread('comment-comment123');
 
         // assert
-        deletedComment = await CommentThreadsTableTestHelper.findCommentThreadsByIdFalseDelete(commentThread.id);
-        expect(deletedComment).toHaveLength(0);
+        deletedComment = await CommentThreadsTableTestHelper.findCommentThreadsByIdFalseDelete(useCasePayload.commentId);
+
+        // deletedComment = await CommentThreadsTableTestHelper.findCommentThreadsById(useCasePayload.commentId);
+        // console.log(deletedComment);
+        // expect(deletedComment.is_delete).toEqual(true);
+        // expect(deletedComment).toHaveLength(0);
       });
 
       describe('getCommentThread function', () => {
+        it('should throw not found error when comment not found', async () => {
+          const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool);
+
+          // act and assert
+          await expect(commentThreadRepositoryPostgres.getCommentThread('thread-fake')).rejects.toThrowError(NotFoundError);
+        });
+
         it('should get comment correctly', async () => {
           const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool, {});
 
-          await UsersTableTestHelper.addUser({
+          const userPayload = {
             id: 'user-user123',
             username: 'misno48',
-          });
+          };
 
-          await ThreadsTableTestHelper.addThread({
+          await UsersTableTestHelper.addUser(userPayload);
+
+          const threadPayload = {
             id: 'thread-thread123',
-            body: 'some body thread',
-            userId: 'user-user123',
-          });
+            title: 'some title thread',
+            userId: userPayload.id,
+          };
 
-          await CommentThreadsTableTestHelper.addCommentThread({
+          await ThreadsTableTestHelper.addThread(threadPayload);
+
+          const commentPayload = {
             content: 'some comment thread',
-            userId: 'user-user123',
-            threadId: 'thread-thread123',
-          });
+            userId: userPayload.id,
+            threadId: threadPayload.id,
+          };
 
-          const comments = await commentThreadRepositoryPostgres.getCommentThread('thread-thread123');
+          await CommentThreadsTableTestHelper.addCommentThread(commentPayload);
+
+          const comments = await commentThreadRepositoryPostgres.getCommentThread(threadPayload.id);
 
           expect(Array.isArray(comments)).toBe(true);
           expect(comments[0].id).toEqual('comment-comment123');

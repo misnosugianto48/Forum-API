@@ -1,12 +1,12 @@
 const GetCommentThread = require('../GetCommentThread');
 
 describe('a GetCommentThread entities', () => {
-  it('should throw error when did not containe needed property', () => {
+  it('should throw error when did not contain needed property', () => {
     // arrange
     const payload = {
       id: 'comment-comment123',
       username: 'misno48',
-      date: '2023-11-27',
+      date: new Date('2023-11-27 19:00:19.000000'),
     };
 
     // act and assert
@@ -16,10 +16,11 @@ describe('a GetCommentThread entities', () => {
   it('should throw an error when did not meet data type specification', () => {
     // arr
     const payload = {
-      id: 1234,
+      id: 123,
       username: 'misno48',
-      date: '2023-11-27',
+      threadId: 'thread-thread123',
       content: 'some comment thread',
+      date: new Date('2023-11-27 19:00:19.000000'),
       isDelete: false,
     };
 
@@ -32,8 +33,9 @@ describe('a GetCommentThread entities', () => {
     const payload = {
       id: 'comment-comment123',
       username: 'misno48',
-      date: '2023-11-27',
+      threadId: 'thread-thread123',
       content: 'some comment thread',
+      date: new Date('2023-11-27 19:00:19.000000'),
       isDelete: false,
     };
 
@@ -43,7 +45,7 @@ describe('a GetCommentThread entities', () => {
     // assert
     expect(getComment.id).toEqual(payload.id);
     expect(getComment.username).toEqual(payload.username);
-    expect(getComment.date).toEqual(new Date(payload.date).toISOString());
+    expect(getComment.date).toEqual(payload.date.toISOString());
     expect(getComment.content).toEqual(payload.content);
   });
 
@@ -52,8 +54,9 @@ describe('a GetCommentThread entities', () => {
     const payload = {
       id: 'comment-comment123',
       username: 'misno48',
-      date: '2023-11-27',
-      content: '**komentar telah dihapus**',
+      threadId: 'thread-thread123',
+      content: 'some comment thread',
+      date: new Date('2023-11-27 19:00:19.000000'),
       isDelete: true,
     };
 
@@ -63,7 +66,7 @@ describe('a GetCommentThread entities', () => {
     // assert
     expect(getComment.id).toEqual(payload.id);
     expect(getComment.username).toEqual(payload.username);
-    expect(getComment.date).toEqual(new Date(payload.date).toISOString());
+    expect(getComment.date).toEqual(payload.date.toISOString());
     expect(getComment.content).toEqual('**komentar telah dihapus**');
   });
 });
