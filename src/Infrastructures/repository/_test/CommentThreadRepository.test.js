@@ -202,7 +202,16 @@ describe('CommentThreadRepositoryPostgres', () => {
         });
 
         it('should get comment correctly', async () => {
-          const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool, {});
+          // arr
+          // const expectComments = [
+          //   {
+          //     id: 'comment-comment123',
+          //     username: 'misno48',
+          //     content: 'some comment thread',
+          //     date: new Date('2023-11-28 18:45:40'),
+          //     is_delete: false,
+          //   },
+          // ];
 
           const userPayload = {
             id: 'user-user123',
@@ -214,28 +223,34 @@ describe('CommentThreadRepositoryPostgres', () => {
           const threadPayload = {
             id: 'thread-thread123',
             title: 'some title thread',
-            userId: userPayload.id,
+            body: 'some body thread',
+            userId: 'user-user123',
           };
 
           await ThreadsTableTestHelper.addThread(threadPayload);
 
-          const commentPayload = {
-            content: 'some comment thread',
-            userId: userPayload.id,
-            threadId: threadPayload.id,
-          };
+          // const commentPaylaod = {
+          //   content: 'some comment thread',
+          //   userId: 'user-user123',
+          // };
 
-          await CommentThreadsTableTestHelper.addCommentThread(commentPayload);
+          await CommentThreadsTableTestHelper.addCommentThread({ userId: 'user-user123', threadId: 'thread-thread123' });
 
-          const comments = await commentThreadRepositoryPostgres.getCommentThread(threadPayload.id);
+          const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool);
 
-          expect(Array.isArray(comments)).toBe(true);
-          expect(comments[0].id).toEqual('comment-comment123');
-          expect(comments[0].thread_id).toEqual('thread-thread123');
-          expect(comments[0].username).toEqual('misno48');
-          expect(comments[0].content).toEqual('some comment thread');
-          expect(comments[0].is_delete).toBeDefined();
-          expect(comments[0].date).toBeDefined();
+          // act
+          const detailCommentThread = await commentThreadRepositoryPostgres.getCommentThread('thread-thread123');
+
+          console.log(detailCommentThread);
+
+          // assert
+          expect(Array.isArray(detailCommentThread)).toBe(true);
+          expect(detailCommentThread[0].id).toEqual('comment-comment123');
+          expect(detailCommentThread[0].thread_id).toEqual('thread-thread123');
+          expect(detailCommentThread[0].username).toEqual('misno48');
+          expect(detailCommentThread[0].content).toEqual('some comment thread');
+          expect(detailCommentThread[0].is_delete).toBeDefined();
+          expect(detailCommentThread[0].date).toBeDefined();
         });
       });
     });

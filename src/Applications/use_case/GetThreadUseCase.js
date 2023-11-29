@@ -1,4 +1,4 @@
-const GetCommentThread = require('../../Domains/comments/entities/GetCommentThread');
+const GetCommentThread = require('../../Domains/comments/entities/CommentThreadDetail');
 
 class GetThreadUseCase {
   constructor({ threadRepository, commentThreadRepository }) {
@@ -7,28 +7,29 @@ class GetThreadUseCase {
   }
 
   async execute(threadId) {
-    if (!threadId) {
-      throw new Error('GET_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY');
-    } else if (typeof threadId !== 'string') {
-      throw new Error('GET_THREAD_USE_CASE.NOT_MEET_DATA_TYPE_SPECIFICATION');
-    }
+    this._validatePayload(threadId);
 
     const thread = await this._threadRepository.getThread(threadId);
+    const comments = await this._commentThreadRespository.getCommentThread(threadId);
 
-    const commentThread = await this._commentThreadRespository.getCommentThread(threadId);
-
-    const comment = commentThread.map((data) => new GetCommentThread({
-      id: data.id,
-      username: data.username,
-      date: data.date,
-      content: data.content,
-      isDelete: data.isDelete,
-    }));
-
-    return {
+    const result = {
       ...thread,
-      comments: comment,
+      comments: comments.map((comment) => new GetCommentThread(comment)),
     };
+
+    console.log(result);
+
+    return result;
+  }
+
+  _validatePayload(threadId) {
+    if (!threadId) {
+      throw new Error('GET_THREAD_USE_CASE.NOT_CONTAIN_NEEDED_PROPERTY');
+    }
+
+    if (typeof threadId !== 'string') {
+      throw new Error('GET_THREAD_USE_CASE.NOT_MEET_DATA_TYPE_SPECIFICATION');
+    }
   }
 }
 

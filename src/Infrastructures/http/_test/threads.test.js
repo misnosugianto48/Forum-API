@@ -1,6 +1,7 @@
 const pool = require('../../database/postgres/pool');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
+// const CommentThreadsTableTestHelper = require('../../../../tests/CommentThreadTableTestHelper');
 const AuthenticationsTableTestHelper = require('../../../../tests/AuthenticationsTableTestHelper');
 const container = require('../../container');
 const createServer = require('../createServer');
@@ -191,36 +192,74 @@ describe('/threads endpoint', () => {
     it('should response 200 and return thread detail', async () => {
       const server = await createServer(container);
 
-      const authToken = await getAccessToken();
+      const requestPayloadUser = {
+        username: 'misno48',
+        password: 'secret_password',
+        fullname: 'Misno Sugianto',
+      };
+      await server.inject({
+        method: 'POST',
+        url: '/users',
+        payload: requestPayloadUser,
+      });
+      /** Login user */
+      const responseAuths = await server.inject({
+        method: 'POST',
+        url: '/authentications',
+        payload: {
+          username: requestPayloadUser.username,
+          password: requestPayloadUser.password,
+        },
+      });
+      const responseJsonAuth = JSON.parse(responseAuths.payload);
+      const { accessToken } = responseJsonAuth.data;
+      // const authToken = await getAccessToken();
 
       const threadResponse = await server.inject({
         method: 'POST',
         url: '/threads',
         payload: {
-          title: 'some title thread',
+          title: 'some thread title',
           body: 'some body thread',
         },
         headers: {
-          authorization: `Bearer ${authToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
+      const threadJson = JSON.parse(threadResponse.payload);
+      const { addedThread } = threadJson.data;
 
-      const threadResponseJson = JSON.parse(threadResponse.payload);
-
-      const { addedThread } = threadResponseJson.data;
+      console.log(addedThread);
 
       const response = await server.inject({
         method: 'GET',
         url: `/threads/${addedThread.id}`,
       });
 
+      // Assert
       const responseJson = JSON.parse(response.payload);
-
-      console.log(response);
 
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
+      console.log(responseJson);
       expect(responseJson.data.thread).toBeDefined();
+    });
+
+    it('should response 404 when thread doesn\'t exist', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: '/threads/thread-123',
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toEqual('thread tidak ditemukan');
     });
   });
 });

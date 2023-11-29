@@ -40,8 +40,6 @@ class CommentsHandler {
       userId: request.auth.credentials.id,
     };
 
-    console.log(payload);
-
     await deleteCommentUseCase.execute(payload);
 
     return {
