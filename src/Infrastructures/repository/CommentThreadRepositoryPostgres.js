@@ -2,6 +2,8 @@ const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const CommentThreadRepository = require('../../Domains/comments/CommentThreadRepository');
 const AddedCommentThread = require('../../Domains/comments/entities/AddedCommentThread');
+const GetCommentThread = require('../../Domains/comments/entities/GetCommentThread');
+// const GetCommentThread = require('../../Domains/comments/entities/GetCommentThread');
 
 class CommentThreadRepositoryPostgres extends CommentThreadRepository {
   constructor(pool, idGenerator) {
@@ -69,8 +71,7 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
   async getCommentThread(threadId) {
     const query = {
       text: `SELECT comments.id, comments.thread_id, users.username, comments.created_at AS date, comments.content, comments.is_delete 
-      FROM comments 
-      LEFT JOIN threads ON threads.id = comments.thread_id 
+      FROM comments
       LEFT JOIN users ON users.id = comments.user_id
       WHERE comments.thread_id = $1 
       ORDER BY comments.created_at 
@@ -80,13 +81,7 @@ class CommentThreadRepositoryPostgres extends CommentThreadRepository {
 
     const result = await this._pool.query(query);
 
-    if (!result.rowCount) {
-      throw new NotFoundError('Komentar tidak ada');
-    }
-
-    return result.rows.map((comment) => ({
-      ...comment,
-    }));
+    return result.rows.map((comment) => ({ ...comment }));
   }
 }
 

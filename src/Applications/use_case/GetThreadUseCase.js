@@ -1,25 +1,26 @@
-const GetCommentThread = require('../../Domains/comments/entities/CommentThreadDetail');
+const GetCommentThread = require('../../Domains/comments/entities/GetCommentThread');
 
 class GetThreadUseCase {
   constructor({ threadRepository, commentThreadRepository }) {
     this._threadRepository = threadRepository;
-    this._commentThreadRespository = commentThreadRepository;
+    this._commentThreadRepository = commentThreadRepository;
   }
 
   async execute(threadId) {
     this._validatePayload(threadId);
-
     const thread = await this._threadRepository.getThread(threadId);
-    const comments = await this._commentThreadRespository.getCommentThread(threadId);
+    const commentData = await this._commentThreadRepository.getCommentThread(threadId);
 
-    const result = {
+    return {
       ...thread,
-      comments: comments.map((comment) => new GetCommentThread(comment)),
+      comments: commentData.map((data) => new GetCommentThread({
+        id: data.id,
+        username: data.username,
+        date: data.date,
+        content: data.content,
+        is_delete: data.is_delete,
+      })),
     };
-
-    console.log(result);
-
-    return result;
   }
 
   _validatePayload(threadId) {

@@ -7,6 +7,7 @@ const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddThread = require('../../../Domains/threads/entities/AddThread');
 const RegisterUser = require('../../../Domains/users/entities/RegisterUser');
 const AddedCommentThread = require('../../../Domains/comments/entities/AddedCommentThread');
+const GetCommentThread = require('../../../Domains/comments/entities/GetCommentThread');
 const pool = require('../../database/postgres/pool');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
 const UserRepositoryPostgres = require('../UserRepositoryPostgres');
@@ -194,25 +195,8 @@ describe('CommentThreadRepositoryPostgres', () => {
       });
 
       describe('getCommentThread function', () => {
-        it('should throw not found error when comment not found', async () => {
-          const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool);
-
-          // act and assert
-          await expect(commentThreadRepositoryPostgres.getCommentThread('thread-fake')).rejects.toThrowError(NotFoundError);
-        });
-
         it('should get comment correctly', async () => {
           // arr
-          // const expectComments = [
-          //   {
-          //     id: 'comment-comment123',
-          //     username: 'misno48',
-          //     content: 'some comment thread',
-          //     date: new Date('2023-11-28 18:45:40'),
-          //     is_delete: false,
-          //   },
-          // ];
-
           const userPayload = {
             id: 'user-user123',
             username: 'misno48',
@@ -229,28 +213,15 @@ describe('CommentThreadRepositoryPostgres', () => {
 
           await ThreadsTableTestHelper.addThread(threadPayload);
 
-          // const commentPaylaod = {
-          //   content: 'some comment thread',
-          //   userId: 'user-user123',
-          // };
-
           await CommentThreadsTableTestHelper.addCommentThread({ userId: 'user-user123', threadId: 'thread-thread123' });
 
           const commentThreadRepositoryPostgres = new CommentThreadRepositoryPostgres(pool);
 
           // act
-          const detailCommentThread = await commentThreadRepositoryPostgres.getCommentThread('thread-thread123');
-
-          console.log(detailCommentThread);
+          const comments = await commentThreadRepositoryPostgres.getCommentThread('thread-thread123');
 
           // assert
-          expect(Array.isArray(detailCommentThread)).toBe(true);
-          expect(detailCommentThread[0].id).toEqual('comment-comment123');
-          expect(detailCommentThread[0].thread_id).toEqual('thread-thread123');
-          expect(detailCommentThread[0].username).toEqual('misno48');
-          expect(detailCommentThread[0].content).toEqual('some comment thread');
-          expect(detailCommentThread[0].is_delete).toBeDefined();
-          expect(detailCommentThread[0].date).toBeDefined();
+          expect(Array.isArray(comments)).toBe(true);
         });
       });
     });

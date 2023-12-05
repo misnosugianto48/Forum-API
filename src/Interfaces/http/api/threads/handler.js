@@ -19,8 +19,6 @@ class ThreadsHandler {
       userId: credentialId,
     });
 
-    // console.log(addedThread);
-
     const response = h.response({
       status: 'success',
       data: {
@@ -36,11 +34,7 @@ class ThreadsHandler {
 
     const { threadId } = request.params;
 
-    console.log(threadId);
-
     const thread = await getThreadUseCase.execute(threadId);
-
-    console.log(thread);
 
     const response = h.response({
       status: 'success',
@@ -49,7 +43,6 @@ class ThreadsHandler {
       },
     });
 
-    console.log(response);
     response.code(200);
     return response;
   }
