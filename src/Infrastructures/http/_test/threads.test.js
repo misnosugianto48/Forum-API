@@ -193,7 +193,7 @@ describe('/threads endpoint', () => {
     it('should response 200 and return thread detail', async () => {
       // const server = await createServer(container);
       const server = await createServer(container);
-      // const threadId = 'thread-234';
+
       await UsersTableTestHelper.addUser({ id: 'user-user123' });
       await ThreadsTableTestHelper.addThread({ id: 'thread-thread123', userId: 'user-user123' });
       await CommentThreadTableTestHelper.addCommentThread({ userId: 'user-user123', threadId: 'thread-thread123' });

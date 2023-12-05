@@ -29,23 +29,6 @@ describe('GetCommentThread entitiy', () => {
       username: 'misno48',
       date: new Date('2023-11-28 19:00:00.000000'),
       content: 'HELPPPP',
-      is_delete: true,
-    };
-
-    const comments = new GetCommentThread(payload);
-
-    expect(comments.id).toEqual(payload.id);
-    expect(comments.username).toEqual(payload.username);
-    expect(comments.date).toEqual(payload.date.toISOString());
-    expect(comments.content).toEqual('**komentar telah dihapus**');
-  });
-
-  it('should return GetCommentThread object correctly', () => {
-    const payload = {
-      id: 'comment-comment123',
-      username: 'misno48',
-      date: new Date('2023-11-28 19:00:00.000000'),
-      content: 'HELPPPP',
       is_delete: false,
     };
 
@@ -55,5 +38,22 @@ describe('GetCommentThread entitiy', () => {
     expect(comments.username).toEqual(payload.username);
     expect(comments.date).toEqual(payload.date.toISOString());
     expect(comments.content).toEqual(payload.content);
+  });
+
+  it('should return GetCommentThread object correctly', () => {
+    const payload = {
+      id: 'comment-comment123',
+      username: 'misno48',
+      date: new Date('2023-11-28 19:00:00.000000'),
+      content: 'HELPPPP',
+      is_delete: true,
+    };
+
+    const comments = new GetCommentThread(payload);
+
+    expect(comments.id).toEqual(payload.id);
+    expect(comments.username).toEqual(payload.username);
+    expect(comments.date).toEqual(payload.date.toISOString());
+    expect(comments.content).toEqual('**komentar telah dihapus**');
   });
 });
