@@ -6,6 +6,7 @@ const AuthenticationsTableTestHelper = require('../../../../tests/Authentication
 const container = require('../../container');
 const createServer = require('../createServer');
 const CommentThreadTableTestHelper = require('../../../../tests/CommentThreadTableTestHelper');
+const CommentReplyTableTestHelper = require('../../../../tests/CommentReplyTableTestHelper');
 
 describe('/threads endpoint', () => {
   afterAll(async () => {
@@ -195,7 +196,9 @@ describe('/threads endpoint', () => {
       const server = await createServer(container);
 
       await UsersTableTestHelper.addUser({ id: 'user-user123' });
+
       await ThreadsTableTestHelper.addThread({ id: 'thread-thread123', userId: 'user-user123' });
+
       await CommentThreadTableTestHelper.addCommentThread({ userId: 'user-user123', threadId: 'thread-thread123' });
 
       const response = await server.inject({
@@ -205,8 +208,6 @@ describe('/threads endpoint', () => {
 
       // Assert
       const responseJson = JSON.parse(response.payload);
-
-      console.log('thread test: ', responseJson.data.thread);
       expect(response.statusCode).toEqual(200);
       expect(responseJson.status).toEqual('success');
       expect(responseJson.data.thread).toBeDefined();

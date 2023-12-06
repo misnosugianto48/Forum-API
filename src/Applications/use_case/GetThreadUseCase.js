@@ -1,9 +1,10 @@
 const GetCommentThread = require('../../Domains/comments/entities/GetCommentThread');
 
 class GetThreadUseCase {
-  constructor({ threadRepository, commentThreadRepository }) {
+  constructor({ threadRepository, commentThreadRepository, commentReplyRepository }) {
     this._threadRepository = threadRepository;
     this._commentThreadRepository = commentThreadRepository;
+    this._commentReplyRepository = commentReplyRepository;
   }
 
   async execute(threadId) {

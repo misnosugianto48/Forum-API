@@ -56,6 +56,22 @@ class CommentReplyRepositoryPostgres extends CommentReplyRepository {
       throw new AuthorizationError('akses tidak diberikan');
     }
   }
+
+  async getCommentReply(threadId) {
+    const query = {
+      text: `SELECT comment_replies.id, comment_replies.comment_id, users.username, comment_replies.created_at AS date, comment_replies.content, comment_replies.deleted_at, comment_replies.is_delete FROM comment_replies 
+      LEFT JOIN comments ON comments.id = comment_replies.comment_id
+      LEFT JOIN users ON users.id = comment_replies.user_id 
+      WHERE comment_replies.thread_id = $1 
+      ORDER BY comment_replies.created_at 
+      ASC`,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+
+    return result.rows.map((reply) => ({ ...reply }));
+  }
 }
 
 module.exports = CommentReplyRepositoryPostgres;

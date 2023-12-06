@@ -12,6 +12,6 @@ describe('CommentReplyRepository interface', () => {
 
     await expect(commentReplyRepository.verifyCommentReplyOwner('')).rejects.toThrowError('COMMENT_REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
 
-    await expect(commentReplyRepository.getReplyComment('')).rejects.toThrowError('COMMENT_REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(commentReplyRepository.getCommentReply('')).rejects.toThrowError('COMMENT_REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });

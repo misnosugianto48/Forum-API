@@ -16,14 +16,14 @@ describe('GetCommentThread entitiy', () => {
       id: 'COMMENT',
       username: 212,
       date: '0301199809876',
-      content: 'HELPPP',
+      content: 'some comment thread',
       is_delete: 12455,
     };
 
     expect(() => new GetCommentThread(payload)).toThrowError('GET_COMMENT_THREAD.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should return GetCommentThread object correctly when comment is deleted', () => {
+  it('should return GetCommentThread object correctly ', () => {
     const payload = {
       id: 'comment-comment123',
       username: 'misno48',
@@ -40,7 +40,7 @@ describe('GetCommentThread entitiy', () => {
     expect(comments.content).toEqual(payload.content);
   });
 
-  it('should return GetCommentThread object correctly', () => {
+  it('should return GetCommentThread object correctly when comment is deleted', () => {
     const payload = {
       id: 'comment-comment123',
       username: 'misno48',

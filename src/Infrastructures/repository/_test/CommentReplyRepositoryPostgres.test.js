@@ -153,7 +153,6 @@ describe('CommentReplyRepositoryPostgres', () => {
       const addedReply = await customCommentReplyRepository.addReplyComment(addReply);
 
       // assert
-      console.log(addedReply);
       expect(addedReply).toStrictEqual(new AddedReplyComment({
         id: 'reply-reply123',
         content: 'some comment reply',
@@ -163,6 +162,40 @@ describe('CommentReplyRepositoryPostgres', () => {
       const replies = await CommentReplyTableTestHelper.findCommentReplyById('reply-reply123');
       expect(replies).toHaveLength(1);
       expect(replies).toEqual(expect.any(Array));
+    });
+  });
+
+  describe('getCommentReply function', () => {
+    it('should get reply correctly', async () => {
+      // arr
+      await UsersTableTestHelper.addUser({
+        id: 'user-user123',
+        username: 'misno48',
+      });
+
+      await ThreadsTableTestHelper.addThread({
+        id: 'thread-thread123',
+        userId: 'user-user123',
+      });
+
+      await CommentThreadTableTestHelper.addCommentThread({
+        id: 'comment-comment123',
+        userId: 'user-user123',
+        threadId: 'thread-thread123',
+      });
+
+      await CommentReplyTableTestHelper.addCommentReply({
+        commentId: 'comment-comment123',
+        threadId: 'thread-thread123',
+        userId: 'user-user123',
+      });
+
+      // act
+      const replies = await commentReplyRepositoryPostgres.getCommentReply('thread-thread123');
+      console.log(replies);
+
+      // assert
+      expect(Array.isArray(replies)).toBe(true);
     });
   });
 });

@@ -13,7 +13,7 @@ class CommentReplyRepository {
     throw new Error('COMMENT_REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async getReplyComment(threadId) {
+  async getCommentReply(threadId) {
     throw new Error('COMMENT_REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }
