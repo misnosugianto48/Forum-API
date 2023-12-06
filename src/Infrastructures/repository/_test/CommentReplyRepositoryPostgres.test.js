@@ -192,8 +192,6 @@ describe('CommentReplyRepositoryPostgres', () => {
 
       // act
       const replies = await commentReplyRepositoryPostgres.getCommentReply('thread-thread123');
-      console.log(replies);
-
       // assert
       expect(Array.isArray(replies)).toBe(true);
     });

@@ -12,7 +12,9 @@ class AddReplyComment {
     this.userId = userId;
   }
 
-  _verifyPayload({ content, commentId, threadId, userId }) {
+  _verifyPayload({
+    content, commentId, threadId, userId,
+  }) {
     if (!content || !commentId || !threadId || !userId) {
       throw new Error('ADD_REPLY_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY');
     }

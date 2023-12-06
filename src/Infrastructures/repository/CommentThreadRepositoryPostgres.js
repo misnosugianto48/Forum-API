@@ -2,8 +2,6 @@ const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const CommentThreadRepository = require('../../Domains/comments/CommentThreadRepository');
 const AddedCommentThread = require('../../Domains/comments/entities/AddedCommentThread');
-const GetCommentThread = require('../../Domains/comments/entities/GetCommentThread');
-// const GetCommentThread = require('../../Domains/comments/entities/GetCommentThread');
 
 class CommentThreadRepositoryPostgres extends CommentThreadRepository {
   constructor(pool, idGenerator) {

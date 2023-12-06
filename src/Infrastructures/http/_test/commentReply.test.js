@@ -83,7 +83,6 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
       });
 
       const commentJson = JSON.parse(responseComment.payload);
-      console.log(commentJson);
       const { addedComment } = commentJson.data;
 
       // act
@@ -159,7 +158,6 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
       });
 
       const commentJson = JSON.parse(responseComment.payload);
-      console.log(commentJson);
       const { addedComment } = commentJson.data;
 
       // act
@@ -237,7 +235,6 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
     });
 
     const commentJson = JSON.parse(responseComment.payload);
-    console.log(commentJson);
     const { addedComment } = commentJson.data;
 
     // act
@@ -374,7 +371,6 @@ describe('/threads/{threadId}/comments/{commentId}/replies endpoint', () => {
     });
 
     const commentJson = JSON.parse(responseComment.payload);
-    console.log(commentJson);
     const { addedComment } = commentJson.data;
 
     // act
