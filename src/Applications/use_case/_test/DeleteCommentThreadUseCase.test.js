@@ -2,6 +2,7 @@
 const DeleteCommentThreadUseCase = require('../DeleteCommentThreadUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentThreadRepository = require('../../../Domains/comments/CommentThreadRepository');
+const CommentThreadTableTestHelper = require('../../../../tests/CommentThreadTableTestHelper');
 
 describe('deleteCommentThread fucntion', () => {
   it('should throw error when payload not contain needed thread and comment id', async () => {
