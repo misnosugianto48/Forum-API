@@ -27,7 +27,7 @@ describe('HTTP server', () => {
       // Assert
       const responseJson = JSON.parse(response.payload);
       expect(response.statusCode).toEqual(200);
-      expect(responseJson.value).toEqual('Hello world!');
+      expect(responseJson.value).toEqual('HELLO WORLD!');
     });
   });
 
