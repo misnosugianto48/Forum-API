@@ -39,4 +39,4 @@ jobs:
         PGPORT: ${{ secrets.PGPORT_TEST }}
         ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
         REFRESH_TOKEN_KEY: ${{ secrets.REFRESH_TOKEN_KEY }}
-        ACCCESS_TOKEN_AGE: ${{ secrets.ACCESS_TOKEN_AGE }}
+        ACCCESS_TOKEN_AGE: ${{ secrets.ACCCESS_TOKEN_AGE }}
